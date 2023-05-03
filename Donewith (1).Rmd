@@ -1,0 +1,81 @@
+---
+title: "Adam"
+author: "A Griffiths"
+date: "2023-05-01"
+output:
+  beamer_presentation: default
+  slidy_presentation: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Slide with R Output 
+
+```{r}
+library(tidyverse)
+
+```
+
+```{r}
+df <- read_csv("tasks.csv")
+View(df)
+```
+
+```{r}
+df %>% filter(Task == "Rest1" | Task == "Rest2") %>%
+  drop_na(Id) %>%
+  ggplot(aes(Task, fill = Begin)) + 
+  geom_bar(position = 'dodge',
+           alpha = 0.5)
+```
+
+```{r}
+df <- read_csv("tasks.csv")
+
+#df_act <- df$Task %>% 
+ # filter(between("Rest1", "Rest2"))
+
+df_start <- df$Begin
+hist(df_start, breaks = 100)
+```
+
+```{r warning = FALSE}
+df %>% select(Task == "Rest1" | Task == "Rest2") %>%
+  ggplot(data = df, mapping = aes(x = df$Begin, y = Task, fill = df$End)) +
+  geom_boxplot() +
+  labs(title = "Parkinsons Onset vs. Activities",
+       subtitle = "Parkinsons", # Something about zooming in to a certain level
+       x = "start of parkinsons",
+       y = "Activities",
+       color = "Binary Bechdel result") +
+  coord_cartesian(ylim = c(0, 15))
+
+
+
+
+```
+
+
+```{r}
+
+data(df)
+df %>% 
+  lm(Begin ~ Task, data = .) %>%
+  summary()
+
+mod <- lm(Begin ~ Task, data = df)
+mod
+
+summary(mod)
+```
+```{r}
+mod$residuals
+hist(mod$residuals)
+```
+
+```{r}
+pred <-predict(mod) %>% round (1)
+hist(pred)
+```
